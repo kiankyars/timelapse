@@ -1,2 +1,3 @@
 /timelapse_*
 /.venv
+.env

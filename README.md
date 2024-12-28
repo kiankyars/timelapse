@@ -6,7 +6,7 @@ A Python script that creates timelapses from a series of JPEG images.
 - OpenCV (cv2)
 - Python 3.x
 - Python-dotenv
--
+- opencv-python
 
 ## Usage
 
