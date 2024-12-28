@@ -2,13 +2,20 @@ import cv2
 import os
 import sys
 import shutil
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 date = sys.argv[1]
 
+TIMELAPSE_DIR = os.getenv('TIMELAPSE_DIR', str(Path.home() / 'Desktop' / 'timelapses'))
+
 # Define the folder containing images and the output video file
-image_folder = f"/Users/Kian/Desktop/timelapses/timelapse_{date}"
-output_file = "/Users/Kian/Desktop/timelapses/timelapse.mp4"
-20241221
+image_folder = f"{TIMELAPSE_DIR}/timelapse_{date}"
+output_file = f"{TIMELAPSE_DIR}/timelapse.mp4"
+
 # Get sorted list of image files
 images = [img for img in os.listdir(image_folder) if img.endswith(".jpg")]
 
@@ -34,4 +41,6 @@ for image in images:
 # Release the video writer
 video.release()
 print(f"Timelapse saved as {output_file}")
+# delete the image folder
 shutil.rmtree(image_folder)
+

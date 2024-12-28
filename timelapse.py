@@ -2,9 +2,16 @@ import cv2
 import time
 import os
 import datetime
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+TIMELAPSE_DIR = os.getenv('TIMELAPSE_DIR', str(Path.home() / 'Desktop' / 'timelapses'))
 
 folder_name = f"timelapse_{datetime.datetime.now().strftime('%Y%m%d')}"
-file_path = f'/Users/kian/Desktop/timelapses/{folder_name}'
+file_path = f'{TIMELAPSE_DIR}/{folder_name}'
 os.makedirs(file_path, exist_ok=True)
 
 
