@@ -3,10 +3,30 @@
 A Python script that creates timelapses from a series of JPEG images.
 
 ## Requirements
-- OpenCV (cv2)
 - Python 3.x
-- Python-dotenv
-- opencv-python
+
+
+## Installation
+
+1. Install UV if you haven't already:
+
+```
+pip install uv OR brew install uv
+```
+
+2. Create and activate a virtual environment:
+
+```
+uv venv
+source .venv/bin/activate # On Windows use: .venv\Scripts\activate
+
+```
+
+3. Install the dependencies:
+
+```
+uv pip install -r requirements.txt
+```
 
 ## Usage
 
