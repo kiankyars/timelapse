@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 TIMELAPSE_DIR = os.getenv('TIMELAPSE_DIR', str(Path.home() / 'Desktop' / 'timelapses'))
+INTERVAL = int(os.getenv('INTERVAL', 5))
 
 folder_name = f"timelapse_{datetime.datetime.now().strftime('%Y%m%d')}"
 file_path = f'{TIMELAPSE_DIR}/{folder_name}'
@@ -21,7 +22,7 @@ cap = cv2.VideoCapture(0)
 # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 
-frame_interval = 10  # Seconds between frames
+frame_interval = INTERVAL  # Seconds between frames
 
 try:
     while True:

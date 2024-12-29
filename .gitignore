@@ -1,3 +1,6 @@
 /timelapse_*
 /.venv
 .env
+*.mov
+*.mp4
+.DS_store
