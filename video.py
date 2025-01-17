@@ -57,4 +57,4 @@ for image in images:
 video.release()
 print(f"Timelapse saved as {output_file}")
 # delete the image folder
-# shutil.rmtree(image_folder)
+shutil.rmtree(image_folder)
