@@ -4,6 +4,7 @@ import sys
 import shutil
 from pathlib import Path
 from dotenv import load_dotenv
+from datetime import datetime
 
 # Load environment variables
 load_dotenv()
@@ -25,12 +26,13 @@ images.sort()
 # Extract times from first and last images
 first_time = images[0].split('_')[1].split('.')[0]
 last_time = images[-1].split('_')[1].split('.')[0]
-elapsed_time = int(last_time) - int(first_time)
+# Convert string times to datetime objects and get elapsed time in seconds
+elapsed_time = datetime.strptime(last_time, '%H%M%S') - datetime.strptime(first_time, '%H%M%S')
+elapsed_time = (str(elapsed_time)).replace(':', '')
 # total time in seconds
 total_time = INTERVAL * len(images)
 # total time in minutes
 total_time //= 60
-
 
 # Ensure there are images to process
 if not images:
@@ -55,5 +57,4 @@ for image in images:
 video.release()
 print(f"Timelapse saved as {output_file}")
 # delete the image folder
-shutil.rmtree(image_folder)
-
+# shutil.rmtree(image_folder)
