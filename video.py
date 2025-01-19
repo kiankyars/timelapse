@@ -4,7 +4,7 @@ import sys
 import shutil
 from pathlib import Path
 from dotenv import load_dotenv
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Load environment variables
 load_dotenv()
@@ -23,16 +23,18 @@ image_folder = f"{TIMELAPSE_DIR}/timelapse_{date}"
 # Get sorted list of image files
 images = [img for img in os.listdir(image_folder)]
 images.sort()
+# remove '.DS_Store'
+if '.DS_Store' in images:
+  images.remove('.DS_Store')
 # Extract times from first and last images
 first_time = images[0].split('_')[1].split('.')[0]
 last_time = images[-1].split('_')[1].split('.')[0]
 # Convert string times to datetime objects and get elapsed time in seconds
 elapsed_time = datetime.strptime(last_time, '%H%M%S') - datetime.strptime(first_time, '%H%M%S')
-elapsed_time = (str(elapsed_time)).replace(':', '')
 # total time in seconds
 total_time = INTERVAL * len(images)
-# total time in minutes
-total_time //= 60
+# total formatted time
+total_time = timedelta(seconds=total_time)
 
 # Ensure there are images to process
 if not images:
