@@ -68,7 +68,7 @@ for image in images:
     frame = cv2.imread(img_path)
 
     # Extract and format timestamp
-    timestamp = extract_time_from_filename(image).strftime('%H:%M:%S')
+    timestamp = extract_time_from_filename(image).strftime('%H:%M')
     # Add timestamp to the frame
     font = cv2.FONT_HERSHEY_SIMPLEX
     font_scale = 1
@@ -94,7 +94,7 @@ if os.path.exists(MUSIC_PATH):
     end_time = start_time + video_duration
     audio_segment = audio_clip.subclip(start_time, end_time)
     video_with_audio = video_clip.set_audio(audio_segment)
-    final_output_file = output_file.replace(".mp4", "_with_audio.mp4")
+    final_output_file = output_file.replace("timelapse_", "")
     video_with_audio.write_videofile(final_output_file, codec="libx264", audio_codec="aac")
     print(f"Timelapse with audio saved as {final_output_file}")
 else:
@@ -102,4 +102,6 @@ else:
 
 
 # Delete the image folder
-shutil.rmtree(image_folder)
+# shutil.rmtree(image_folder)
+# Delete timelapse w/o music 
+Path.unlink(output_file)
