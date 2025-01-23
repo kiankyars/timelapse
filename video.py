@@ -10,12 +10,15 @@ from datetime import datetime, timedelta
 from moviepy.audio.io.AudioFileClip import AudioFileClip
 from moviepy.video.io.VideoFileClip import VideoFileClip
 import random
+from math import ceil
 
 
 # Load environment variables
 load_dotenv()
 
 date = sys.argv[1]
+# y to delete, n to keep
+delete_directory = sys.argv[2]
 
 TIMELAPSE_DIR = os.getenv('TIMELAPSE_DIR', str(Path.home() / 'Desktop' / 'timelapses'))
 OUTPUT_DIR = os.getenv('OUTPUT_DIR', str(Path.home() / 'Desktop'))
@@ -52,6 +55,25 @@ last_time = extract_time_from_filename(images[-1])
 elapsed_time = last_time - first_time
 # Total time based on the number of frames and interval
 total_time = timedelta(seconds=INTERVAL * len(images))
+
+# Calculate the final timelapse duration in seconds
+final_timelapse_duration = len(images) / FPS
+
+# Check if final timelapse duration exceeds 1 minute
+if final_timelapse_duration > 60:
+    # scaling factor required to get to one minute
+    ratio = final_timelapse_duration / 60
+    print(f'''The generated timelapse will be approximately {ceil(final_timelapse_duration)} seconds long, if you want to automatically scale to one minute, press enter''')
+    scaling_factor = input("Enter a scaling factor to speed up the video (e.g., 2 for 2x speed-up): ")
+    if not scaling_factor:
+        scaling_factor = ratio
+    if scaling_factor <= 0:
+        raise ValueError("Scaling factor must be greater than 0.")
+    # Adjust FPS to scale down video duration
+    FPS = int(FPS * float(scaling_factor))
+    final_timelapse_duration = len(images) / FPS  # Recalculate timelapse duration
+    print(f"FPS has been updated to {FPS} to accommodate the scaling factor.")
+    print(f"New timelapse duration will be approximately {round(final_timelapse_duration)} seconds.")
 
 # Read the first image to get frame dimensions
 first_image = cv2.imread(os.path.join(image_folder, images[0]))
@@ -109,14 +131,32 @@ if os.path.exists(MUSIC_PATH):
     end_time = start_time + video_duration
     audio_segment = audio_clip.subclip(start_time, end_time)
     video_with_audio = video_clip.set_audio(audio_segment)
-    final_output_file = output_file.replace("timelapse_", "")
-    video_with_audio.write_videofile(final_output_file, codec="libx264", audio_codec="aac")
-    print(f"Timelapse with audio saved as {final_output_file}")
+    timelapse_with_music = output_file.replace("timelapse_", "")
+    video_with_audio.write_videofile(timelapse_with_music, codec="libx264", audio_codec="aac")
+    print(f"Timelapse with audio saved as {timelapse_with_music}")
 else:
     print("Music file not found. Timelapse video saved without audio.")
 
+# unlink current output_file so that the real final output file can be assigned
+Path.unlink(output_file)
+
+# convert to .mov because X does not accept my .mp4 files
+output_file = timelapse_with_music[:-4] + '.mov'
+try:
+    video = VideoFileClip(timelapse_with_music)
+    video.write_videofile(output_file, codec="libx264", audio_codec="aac")
+    print(f"Converted {timelapse_with_music} to {output_file}")
+    video.close()
+except Exception as e:
+    print(f"An error occurred while converting to .mov: {e}")
+
 
 # Delete the image folder
-shutil.rmtree(image_folder)
-# Delete timelapse w/o music 
-Path.unlink(output_file)
+if delete_directory == 'y':
+    shutil.rmtree(image_folder)
+elif delete_directory == 'n':
+    pass
+else:
+    exit('incorrect second arguement provided, must be either y or n, (delete or keep)')
+# Delete timelapse in .mp4
+Path.unlink(timelapse_with_music)
