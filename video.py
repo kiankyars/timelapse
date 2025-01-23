@@ -117,6 +117,6 @@ else:
 
 
 # Delete the image folder
-# shutil.rmtree(image_folder)
+shutil.rmtree(image_folder)
 # Delete timelapse w/o music 
 Path.unlink(output_file)
