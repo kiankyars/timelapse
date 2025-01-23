@@ -21,7 +21,7 @@ TIMELAPSE_DIR = os.getenv('TIMELAPSE_DIR', str(Path.home() / 'Desktop' / 'timela
 OUTPUT_DIR = os.getenv('OUTPUT_DIR', str(Path.home() / 'Desktop'))
 FPS = int(os.getenv('FPS', 60))
 INTERVAL = int(os.getenv('INTERVAL', 5))
-MUSIC_PATH = os.getenv('MUSIC_PATH', str(Path.home() / 'Music/ClassicalMusic.mp3'))
+MUSIC_PATH = os.getenv('MUSIC_PATH')
 
 
 # Define the folder containing images and the output video file
@@ -81,11 +81,26 @@ for image in images:
 
 # Release the video writer
 video.release()
-
-# Add audio to the video
 if os.path.exists(MUSIC_PATH):
+    # List all songs in the folder
+    songs = [song for song in os.listdir(MUSIC_PATH) if song.endswith(('.mp3', '.wav'))]
+    if not songs:
+        print("No audio files found in the folder.")
+        exit(1)
+    print("Available songs:")
+    for idx, song in enumerate(songs):
+        print(f"{idx + 1}: {song}")
+    # Prompt user to select a song
+    choice = int(input("Enter the number of the song you want to use: ")) - 1
+    if choice < 0 or choice >= len(songs):
+        print("Invalid choice. Exiting.")
+        exit(1)
+    selected_song = os.path.join(MUSIC_PATH, songs[choice])
+    print(f"Selected song: {selected_song}")
+
+    # Add audio to the video
     video_clip = VideoFileClip(output_file)
-    audio_clip = AudioFileClip(MUSIC_PATH)
+    audio_clip = AudioFileClip(selected_song)
     video_duration = video_clip.duration
     audio_duration = audio_clip.duration
     if video_duration > audio_duration:
@@ -102,6 +117,6 @@ else:
 
 
 # Delete the image folder
-shutil.rmtree(image_folder)
+# shutil.rmtree(image_folder)
 # Delete timelapse w/o music 
 Path.unlink(output_file)
