@@ -10,17 +10,24 @@ def add_audio_to_video(output_file):
         if not songs:
             print("No audio files found in the folder.")
             exit(1)
-        print("Available songs:")
-        for idx, song in enumerate(songs):
-            print(f"{idx + 1}: {song}")
-        # Prompt user to select a song
-        choice = int(input("Enter the number of the song you want to use: ")) - 1
+        # Prompt for music selection
+        print("Music Options:")
+        print("0: No music (silent video)")
+        for idx, song in enumerate(songs, 1):
+            print(f"{idx}: {song}")
+        # Get user choice
+        choice = int(input("Enter the number of the song: "))
+        # Handle no music option
+        if choice == 0:
+            print("Creating silent video.")
+            timelapse_no_music = output_file.replace("timelapse_", "")
+            os.rename(output_file, timelapse_no_music)
+            return timelapse_no_music
         if choice < 0 or choice >= len(songs):
             print("Invalid choice. Exiting.")
             exit(1)
         selected_song = os.path.join(MUSIC_PATH, songs[choice])
         print(f"Selected song: {selected_song}")
-
         # Add audio to the video
         video_clip = VideoFileClip(output_file)
         audio_clip = AudioFileClip(selected_song)

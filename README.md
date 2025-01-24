@@ -21,7 +21,7 @@ Create stunning timelapses with ease, complete with timestamps and custom music.
 
 ### Installation
 
-## Install UV (recommended)
+#### Install UV (recommended)
 ```bash
 # If on mac
 brew install uv

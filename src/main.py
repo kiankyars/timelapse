@@ -1,6 +1,12 @@
 import os
+import sys
 import shutil
 from pathlib import Path
+
+# Add project root to Python path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+# Relative imports from project modules
 from utils.config import TIMELAPSE_DIR, MUSIC_PATH
 from utils.helpers import get_sorted_images
 from processing.image_processing import create_timelapse
@@ -17,8 +23,9 @@ def main(date: str, delete_directory: str):
     # Add music if available
     if os.path.exists(MUSIC_PATH):
         time_lapse_with_music = add_audio_to_video(output_file)
-    # unlink current output_file so that the real final output file can be assigned
-    Path.unlink(output_file)
+    # unlink current output_file if music was dded so that the real final output file can be assigned
+    if os.path.exists(output_file):
+        Path.unlink(output_file)
     # Convert to .mov
     output_file = convert_video_to_mov(time_lapse_with_music)
 
