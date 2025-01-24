@@ -1,79 +1,97 @@
-# Timelapse Creator
+# 🎥 Timelapse Creator
 
-A Python script that creates timelapses from a series of JPEG images, with options for timestamps and background music.
+Create stunning timelapses with ease, complete with timestamps and custom music.
 
-## Features
-- Captures images at specified intervals
-- Creates MP4 videos from captured images
-- Adds timestamps to videos
-- Optional background music support
-- Automatic cleanup of source images
+## ✨ Features
 
-## Requirements
-- Python 3.x
+- 📸 Capture images at configurable intervals
+- 🎬 Generate high-quality video timelapses
+- ⏰ Automatic timestamp overlay
+- 🎵 Optional background music integration
+- 🧹 Flexible image source management
+
+## 🛠 Prerequisites
+
+- Python 3.8+
 - OpenCV
-- MoviePy (for audio support)
+- MoviePy
 - python-dotenv
 
-## Installation
+## 🚀 Quick Start
 
-1. Install UV if you haven't already:
+### Installation
+
+## Install UV (recommended)
 ```bash
-pip install uv
-# OR
+# If on mac
 brew install uv
-```
+# Otherwise
+pip install uv
 
-2. Create and activate a virtual environment:
-```bash
+# Create virtual environment
 uv venv
-source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
-```
+source .venv/bin/activate
 
-3. Install the dependencies:
-```bash
+# Install dependencies
 uv pip install -r requirements.txt
 ```
 
-## Usage
+### Configuration
 
-1. Capture timelapse images:
+Create a `.env` file:
+
 ```bash
-python3 timelapse.py
-```
-
-2. Create video from images:
-```bash
-python3 video.py <date>
-```
-
-3. Add timestamps and music (optional):
-```bash
-python3 add_time.py
-```
-
-## Configuration
-
-Create a `.env` file in the project root with:
-```bash
-# Required
+# Timelapse Settings
 TIMELAPSE_DIR=/path/to/timelapses
-
-# Optional
-OUTPUT_DIR=/path/to/output  # Defaults to ~/Desktop
-INTERVAL=5                  # Seconds between frames (default: 5)
-FPS=60                     # Frames per second in output video (default: 60)
-MUSIC_PATH=/path/to/music.mp3  # Optional background music
+OUTPUT_DIR=/path/to/output
+INTERVAL=5       # Seconds between frames
+FPS=60           # Output video frames per second
+MUSIC_PATH=/path/to/music/directory
 ```
 
-If no TIMELAPSE_DIR is specified, it will default to `~/Desktop/timelapses`
+### Usage
 
-## File Structure
-- `timelapse.py`: Captures images at specified intervals
-- `video.py`: Converts image sequences to video
-- `add_time.py`: Adds timestamps and optional background music to videos
+```bash
+# Create timelapse
+python main.py <date> <delete_images_flag>
 
-## Output
-- Images are saved in `TIMELAPSE_DIR/timelapse_YYYYMMDD/`
-- Videos are saved as `timelapse_YYYYMMDD_duration.mp4`
-- Timestamped videos are saved as `final_timelapse_YYYYMMDD_duration.mp4`
+# Examples
+python main.py 20240123 y   # Create timelapse, delete source images
+python main.py 20240123 n   # Create timelapse, keep source images
+```
+
+## 📂 Project Structure
+
+```
+timelapse_project/
+│
+├── src/
+│   ├── main.py             # main function
+│   └── timelapse.py        # Main capture script
+│
+├── processing/
+│   ├── image_processing.py # Image to video conversion
+│   ├── audio_processing.py # Music integration
+│   └── video_conversion.py # Video format handling
+│
+├── utils/
+│   ├── config.py           # Configuration management
+│   └── helpers.py          # Utility functions
+│
+├── requirements.txt
+└── README.md
+```
+
+## 🔧 Customization
+
+- Adjust capture intervals in `.env`
+- Select background music interactively
+- Configure video parameters flexibly
+
+## 📝 License
+
+MIT
+
+## 🤝 Contributing
+
+Contributions welcome! Please read the contributing guidelines before getting started.
