@@ -1,33 +1,36 @@
 import os
 import shutil
 from pathlib import Path
-from config import TIMELAPSE_DIR, OUTPUT_DIR, MUSIC_PATH, FPS
-from utils.helpers import extract_time_from_filename, get_sorted_images
-from processing.image_processing import generate_timelapse, calculate_timelapse_duration
+from utils.config import TIMELAPSE_DIR, MUSIC_PATH
+from utils.helpers import get_sorted_images
+from processing.image_processing import create_timelapse
 from processing.audio_processing import add_audio_to_video
 from processing.video_conversion import convert_video_to_mov
+from processing.scaling import scale
 
 def main(date: str, delete_directory: str):
     image_folder = f"{TIMELAPSE_DIR}/timelapse_{date}"
     images = get_sorted_images(image_folder)
-    output_file = f"{OUTPUT_DIR}/timelapse_{date}.mp4"
-
-    # Generate the timelapse
-    generate_timelapse(images, image_folder, FPS, output_file)
+    elapsed_time, total_time, fps = scale(images)
+    output_file = create_timelapse(image_folder, images, elapsed_time, total_time, fps, date)
 
     # Add music if available
     if os.path.exists(MUSIC_PATH):
-        music_file = os.path.join(MUSIC_PATH, random.choice(os.listdir(MUSIC_PATH)))
-        output_with_audio = output_file.replace('.mp4', '_with_audio.mp4')
-        add_audio_to_video(output_file, music_file, output_with_audio)
+        time_lapse_with_music = add_audio_to_video(output_file)
+    # unlink current output_file so that the real final output file can be assigned
+    Path.unlink(output_file)
+    # Convert to .mov
+    output_file = convert_video_to_mov(time_lapse_with_music)
 
-        # Convert to .mov
-        output_mov = output_with_audio.replace('.mp4', '.mov')
-        convert_video_to_mov(output_with_audio, output_mov)
-
-    # Delete the image folder if required
-    if delete_directory.lower() == 'y':
+    # Delete the image folder
+    if delete_directory == 'y':
         shutil.rmtree(image_folder)
+    elif delete_directory == 'n':
+        pass
+    else:
+        exit('incorrect second arguement provided, must be either y or n, (delete or keep)')
+    # Delete timelapse in .mp4
+    Path.unlink(time_lapse_with_music)
 
 if __name__ == "__main__":
     import sys
