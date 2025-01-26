@@ -21,8 +21,9 @@ def main(date: str, delete_directory: str):
     output_file = create_timelapse(image_folder, images, elapsed_time, total_time, fps, date)
 
     # Add music if available
-    if os.path.exists(MUSIC_PATH):
-        time_lapse_with_music = add_audio_to_video(output_file)
+    if not os.path.exists(MUSIC_PATH):
+        exit("could not find path to music directory")
+    time_lapse_with_music = add_audio_to_video(output_file)
     # unlink current output_file if music was dded so that the real final output file can be assigned
     if os.path.exists(output_file):
         Path.unlink(output_file)
